@@ -29,7 +29,7 @@ if [ -z "$IS_AZURE" ]; then
   pip3 install azure-storage-blob
 fi
 
-if ! python3 $WERCKER_STEP_ROOT/upload.py "$WERCKER_AZURE_BLOB_PATH_OR_FILE" "$WERCKER_AZURE_BLOB_STORAGE_ACCOUNT" "$WERCKER_AZURE_BLOB_STORAGE_SAS"; then
+if ! python3 "$WERCKER_STEP_ROOT/upload.py" "$WERCKER_AZURE_BLOB_PATH_OR_FILE" "$WERCKER_AZURE_BLOB_STORAGE_ACCOUNT" "$WERCKER_AZURE_BLOB_STORAGE_SAS"; then
 	fail "Unable to upload."
 fi
 
