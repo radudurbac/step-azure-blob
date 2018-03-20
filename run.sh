@@ -17,19 +17,19 @@ if [ -z "$IS_PYTHON" ]; then
   fail "Python not installed"
 fi
 
-IS_REQUESTS=$(pip -q freeze | grep requests)
+IS_REQUESTS=$(pip3 -q freeze | grep requests)
 if [ -z "$IS_REQUESTS" ]; then
   info "Requests package not installed. Attepmt to install it."
   pip3 install requests
 fi
 
-IS_AZURE=$(pip -q freeze | grep azure-storage-blob)
+IS_AZURE=$(pip3 -q freeze | grep azure-storage-blob)
 if [ -z "$IS_AZURE" ]; then
   info "Azure-storage-blob package not installed. Attepmt to install it."
   pip3 install azure-storage-blob
 fi
 
-if ! python3 ./upload.py "$WERCKER_AZURE_BLOB_PATH_OR_FILE" "$WERCKER_AZURE_BLOB_STORAGE_ACCOUNT" "$WERCKER_AZURE_BLOB_STORAGE_SAS"; then
+if ! python3 $WERCKER_STEP_ROOT/upload.py "$WERCKER_AZURE_BLOB_PATH_OR_FILE" "$WERCKER_AZURE_BLOB_STORAGE_ACCOUNT" "$WERCKER_AZURE_BLOB_STORAGE_SAS"; then
 	fail "Unable to upload."
 fi
 
