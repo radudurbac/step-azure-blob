@@ -1,0 +1,17 @@
+name: azure-blob
+version: 0.1.0
+description: Upload file or folder to azure blob using SAS as authentication token
+keywords:
+  - azure
+  - blob
+  - upload
+properties:
+  path_or_file:
+    type: string
+    required: true
+  storage_account:
+    type: string
+    required: true
+  storage_sas:
+    type: string
+    required: true
