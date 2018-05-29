@@ -35,7 +35,7 @@ def put_blob(storage_url,container_name, blob_name,qry_string,file_name_full_pat
     except IndexError:
         file_ext = None
     # Set content Type
-    if file_ext is not None:
+    if file_ext is not None and file_ext in mimetypes.types_map:
         content_type_string = ContentSettings(content_type=mimetypes.types_map[file_ext])
     else:
         content_type_string = None
