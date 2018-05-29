@@ -35,18 +35,17 @@ def put_blob(storage_url,container_name, blob_name,qry_string,file_name_full_pat
     except IndexError:
         file_ext = None
     # Set content Type
+    headers = {
+        'x-ms-blob-type': 'BlockBlob'
+    }
     if file_ext is not None and file_ext in mimetypes.types_map:
         content_type_string = ContentSettings(content_type=mimetypes.types_map[file_ext])
-    else:
-        content_type_string = None
+        headers['content-type'] = content_type_string.content_type;
     
     with open(file_name_full_path , 'rb') as fh:
         response = requests.put(storage_url+container_name + '/' + blob_name + '?'+qry_string,
                                 data=fh,
-                                headers={
-                                            'content-type': content_type_string.content_type,
-                                            'x-ms-blob-type': 'BlockBlob'
-                                        },
+                                headers,
                                 params={'file': file_name_full_path}
                                 )
         return response.status_code
