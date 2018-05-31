@@ -28,10 +28,16 @@ def upload_using_sas(sas_url , file_name_full_path):
     return response_status
 
 
-def put_blob(storage_url,container_name, blob_name,qry_string,file_name_full_path):
+def put_blob(storage_url, container_name, blob_name, qry_string, file_name_full_path):
+    """
+    This function sets file extensions,
+    prepares the PUT request,
+    sets 'Content-Length' and clears 'Transfer-Encoding' headers for 0-size files
+    :return: HTTP request status code
+    """
     file_name_only = os.path.basename(file_name_full_path)
     try:
-        file_ext = '.' + file_name_only.split('.')[1]
+        file_ext = '.' + file_name_only.split('.')[-1]
     except IndexError:
         file_ext = None
     # Set content Type
@@ -40,14 +46,19 @@ def put_blob(storage_url,container_name, blob_name,qry_string,file_name_full_pat
     }
     if file_ext is not None and file_ext in mimetypes.types_map:
         content_type_string = ContentSettings(content_type=mimetypes.types_map[file_ext])
-        header['content-type'] = content_type_string.content_type
-    
-    with open(file_name_full_path , 'rb') as fh:
-        response = requests.put(storage_url+container_name + '/' + blob_name + '?'+qry_string,
-                                data=fh,
-                                headers=header,
-                                params={'file': file_name_full_path}
-                                )
-        return response.status_code
+        header['Content-Type'] = content_type_string.content_type
 
+    # Set content length for empty files
+    if os.path.getsize(file_name_full_path) == 0:
+        length = os.path.getsize(file_name_full_path)
+        header['Content-Length'] = str(length)
+
+    with open(file_name_full_path, 'rb') as fh:
+        s = Session()
+        url = storage_url + container_name + '/' + blob_name + '?' + qry_string
+        req = Request('PUT', url, data=fh, headers=header, params={'file': file_name_full_path})
+        prepped = s.prepare_request(req)
+        del prepped.headers['Transfer-Encoding']
+        response = s.send(prepped)
+        return response.status_code
 
