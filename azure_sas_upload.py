@@ -2,7 +2,7 @@
 import os
 import mimetypes
 from azure.storage.blob import ContentSettings
-from urlparse import urlparse
+from urllib.parse import urlparse
 from requests import Request, Session
 
 
