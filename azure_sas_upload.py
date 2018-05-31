@@ -1,10 +1,9 @@
 #!/usr/bin/env python
 import os
-import requests
 import mimetypes
 from azure.storage.blob import ContentSettings
-from urllib.parse import urlparse
-import sys
+from urlparse import urlparse
+from requests import Request, Session
 
 
 def upload_using_sas(sas_url , file_name_full_path):
