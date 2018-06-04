@@ -47,17 +47,19 @@ def put_blob(storage_url, container_name, blob_name, qry_string, file_name_full_
         content_type_string = ContentSettings(content_type=mimetypes.types_map[file_ext])
         header['Content-Type'] = content_type_string.content_type
 
-    # Set content length for empty files
+    # Set content-length header for empty files
     if os.path.getsize(file_name_full_path) == 0:
         length = os.path.getsize(file_name_full_path)
         header['Content-Length'] = str(length)
 
+    # Prepare request headers
     with open(file_name_full_path, 'rb') as fh:
         s = Session()
         url = storage_url + container_name + '/' + blob_name + '?' + qry_string
         req = Request('PUT', url, data=fh, headers=header, params={'file': file_name_full_path})
         prepped = s.prepare_request(req)
-        del prepped.headers['Transfer-Encoding']
-        response = s.send(prepped)
-        return response.status_code
-
+        try:
+            del prepped.headers['Transfer-Encoding']
+        finally:
+            response = s.send(prepped)
+            return response.status_code
